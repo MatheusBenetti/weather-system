@@ -20,6 +20,12 @@ type ViaCEP struct {
 	Siafi       string `json:"siafi"`
 }
 
+type WeatherResponse struct {
+	TempC float64 `json:"temp_c"`
+	TempF float64 `json:"temp_f"`
+	TempK float64 `json:"temp_k"`
+}
+
 func main() {
 	http.HandleFunc("/getTemperature", func(w http.ResponseWriter, r *http.Request) {
 		cep := r.URL.Query().Get("cep")
@@ -49,6 +55,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(weather)
 	})
+
+	http.ListenAndServe(":8080", nil)
 }
 
 func fetchViaCep(cep string) (*ViaCEP, error) {
@@ -72,10 +80,39 @@ func fetchViaCep(cep string) (*ViaCEP, error) {
 	return &data, nil
 }
 
-func fetchWeatherAPI(location string) {
+func fetchWeatherAPI(location string) (*WeatherResponse, error) {
+	req, err := http.Get("https://api.weatherapi.com/v1/current.json?q=" + location + "&key=50dbab8a6094453b8d4214401242301")
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request to Weather API: %v", err)
+	}
+	defer req.Body.Close()
+
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	var data WeatherResponse
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert temperature from Celsius to Fahrenheit: %v", err)
+	}
+
 	return &WeatherResponse{
-		TempC: 28.5,
-		TempF: celsiusToFahrenheit(28.5),
-		TempK: celsiusToKelvin(28.5),
+		TempC: data.TempC,
+		TempF: celsiusToFahrenheit(data.TempC),
+		TempK: celsiusToKelvin(data.TempC),
 	}, nil
+}
+
+func celsiusToFahrenheit(celsius float64) float64 {
+	return (celsius * 1.8) + 32
+}
+
+func celsiusToKelvin(celsius float64) float64 {
+	return celsius + 273
 }
