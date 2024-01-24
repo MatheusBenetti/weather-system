@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -50,13 +51,16 @@ func main() {
 			return
 		}
 
-		// Responda com as temperaturas formatadas
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(weather)
 	})
 
-	http.ListenAndServe(":8080", nil)
+	log.Println("Server listening on port :8080")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func fetchViaCep(cep string) (*ViaCEP, error) {
@@ -96,10 +100,6 @@ func fetchWeatherAPI(location string) (*WeatherResponse, error) {
 	var data WeatherResponse
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
-	}
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to convert temperature from Celsius to Fahrenheit: %v", err)
 	}
 
 	return &WeatherResponse{
