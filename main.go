@@ -27,6 +27,10 @@ type WeatherResponse struct {
 	TempK float64 `json:"temp_k"`
 }
 
+type Current struct {
+	WeatherResponse `json:"current"`
+}
+
 func main() {
 	http.HandleFunc("/getTemperature", func(w http.ResponseWriter, r *http.Request) {
 		cep := r.URL.Query().Get("cep")
@@ -53,7 +57,7 @@ func main() {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(weather)
+		json.NewEncoder(w).Encode(weather.WeatherResponse)
 	})
 
 	log.Println("Server listening on port :8080")
@@ -84,7 +88,7 @@ func fetchViaCep(cep string) (*ViaCEP, error) {
 	return &data, nil
 }
 
-func fetchWeatherAPI(location string) (*WeatherResponse, error) {
+func fetchWeatherAPI(location string) (*Current, error) {
 	req, err := http.Get("https://api.weatherapi.com/v1/current.json?q=" + location + "&key=50dbab8a6094453b8d4214401242301")
 
 	if err != nil {
@@ -97,16 +101,17 @@ func fetchWeatherAPI(location string) (*WeatherResponse, error) {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	var data WeatherResponse
+	var data Current
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
 	}
 
-	return &WeatherResponse{
-		TempC: data.TempC,
-		TempF: celsiusToFahrenheit(data.TempC),
-		TempK: celsiusToKelvin(data.TempC),
-	}, nil
+	var fahrenheit float64 = data.WeatherResponse.TempC
+	var kelvin float64 = data.WeatherResponse.TempC
+
+	data.WeatherResponse.TempF = celsiusToFahrenheit(fahrenheit)
+	data.WeatherResponse.TempK = celsiusToKelvin(kelvin)
+	return &data, nil
 }
 
 func celsiusToFahrenheit(celsius float64) float64 {
