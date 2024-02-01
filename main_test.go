@@ -40,20 +40,16 @@ func TestTemperatureConversion(t *testing.T) {
 }
 
 func TestServerListening(t *testing.T) {
-	// Start the server
 	go main()
 
-	// Wait for the server to start listening
 	time.Sleep(1 * time.Second)
 
-	// Send a GET request to the server
 	resp, err := http.Get("http://localhost:8080/getTemperature?cep=95670084")
 	if err != nil {
 		t.Fatalf("Failed to send GET request: %v", err)
 	}
 	defer resp.Body.Close()
 
-	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("Expected status code %d, but got %d", http.StatusOK, resp.StatusCode)
 	}
