@@ -89,7 +89,7 @@ func fetchViaCep(cep string) (*ViaCEP, error) {
 }
 
 func fetchWeatherAPI(location string) (*Current, error) {
-	req, err := http.Get("https://api.weatherapi.com/v1/current.json?q=" + location + "&key=50dbab8a6094453b8d4214401242301")
+	req, err := http.Get("http://api.weatherapi.com/v1/current.json?q=" + location + "&key=50dbab8a6094453b8d4214401242301")
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request to Weather API: %v", err)
