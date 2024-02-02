@@ -37,7 +37,7 @@ Para rodar com o docker, primeiro faça o build com:
 ```
 docker compose up --build
 ```
-ou então utilize docker-compose up --build, dependendo da versão.
+ou então utilize docker-compose up --build, dependendo da versão, após gerar a imagem, pode iniciar as próximas vezes com docker compose up.
 
 ## API Requests
 Faça uma requisição http GET no Postman/Insomnia na url, podendo alterar o CEP para o desejado com o formato 00000000:
