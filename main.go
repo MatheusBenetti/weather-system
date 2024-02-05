@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type ViaCEP struct {
@@ -48,7 +49,9 @@ func main() {
 			return
 		}
 
-		weather, err := fetchWeatherAPI(viaCEP.Localidade)
+		removeSpaces := strings.ReplaceAll(viaCEP.Localidade, " ", "-")
+
+		weather, err := fetchWeatherAPI(removeSpaces)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("error getting weather data"))
