@@ -8,7 +8,7 @@ Digite o CEP desejado para receber a temperatura do momento em graus Celsius, Fa
 - [Ambiente de Desenvolvimento](#developer)
 - [Ambiente de Produção](#production)
 - [Testes](#testes)
-- [Versão de Deploy](#versão-de-deploy)
+- [Versão de Deploy Google Cloud](#versão-de-deploy)
 
 ## Instalação
 
@@ -62,7 +62,7 @@ Para rodar os testes, utilize:
 go test .
 ```
 
-## Versão de Deploy
+## Versão de Deploy Google Cloud
 
 Para utilizar a versão de deploy, degite a url abaixo no seu navegado, também alterando o cep para o desejado no formato 00000000:
 ```
