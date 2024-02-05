@@ -5,10 +5,9 @@ Digite o CEP desejado para receber a temperatura do momento em graus Celsius, Fa
 ## Conteúdo
 
 - [Instalação](#instalação)
-- [Utilização](#utilização)
+- [Ambiente de Desenvolvimento](#developer)
+- [Ambiente de Produção](#production)
 - [Testes](#testes)
-- [Docker](#docker)
-- [API Requests](#api-requests)
 - [Versão de Deploy](#versão-de-deploy)
 
 ## Instalação
@@ -18,31 +17,49 @@ Para fazer o download das dependências, utilize:
 go mod tidy
 ```
 
-## Utilização
+## Ambiente de Desenvolvimento
 
-Para rodar o projeto localmente, utilize:
+Para rodar o projeto em ambiente de desenvolvimento, utilize para criar o container:
+```
+docker compose up --build
+```
+ou então utilize docker-compose up --build, dependendo da versão, após gerar a imagem, pode iniciar as próximas vezes com docker compose up.
+
+Depois para acessar o bash, abra outro terminal e digite:
+```
+docker compose exec web bash
+```
+E então rode o comando:
 ```
 go run main.go
 ```
+Após isso é só fazer uma requisição no terminal com:
+```
+curl http://localhost:8080/getTemperature?cep=95670084
+```
+Ou via Postman/Insomnia
+
+## Ambiente de Produção
+
+Execute o seguinte comando para gerar um build para Linux:
+```
+docker build -t temp-system -f Dockerfile.prod .
+```
+E execute pelo terminal o comando:
+```
+./temp-system
+```
+Após isso é só fazer uma requisição no terminal com:
+```
+curl http://localhost:8080/getTemperature?cep=95670084
+```
+Ou via Postman/Insomnia
 
 ## Testes
 
 Para rodar os testes, utilize:
 ```
 go test .
-```
-
-## Docker
-Para rodar com o docker, primeiro faça o build com:
-```
-docker compose up --build
-```
-ou então utilize docker-compose up --build, dependendo da versão, após gerar a imagem, pode iniciar as próximas vezes com docker compose up.
-
-## API Requests
-Faça uma requisição http GET no Postman/Insomnia na url, podendo alterar o CEP para o desejado com o formato 00000000:
-```
-http://localhost:8080/getTemperature?cep=95670084
 ```
 
 ## Versão de Deploy
