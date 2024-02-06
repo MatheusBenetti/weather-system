@@ -20,6 +20,7 @@ type ViaCEP struct {
 	Gia         string `json:"gia"`
 	Ddd         string `json:"ddd"`
 	Siafi       string `json:"siafi"`
+	Erro        bool   `json:"erro"`
 }
 
 type WeatherResponse struct {
@@ -44,6 +45,12 @@ func main() {
 
 		viaCEP, err := fetchViaCep(cep)
 		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("can not found zipcode"))
+			return
+		}
+
+		if viaCEP.Erro {
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte("can not found zipcode"))
 			return
