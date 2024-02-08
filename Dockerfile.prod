@@ -7,6 +7,4 @@ RUN go mod tidy
 COPY . .
 RUN GOOS=linux go build -o temp-system .
 
-RUN chmod +x temp-system
-
 CMD ["./temp-system"]
