@@ -43,7 +43,7 @@ Ou via Postman/Insomnia
 
 Execute o seguinte comando para gerar um build para Linux:
 ```
-docker build -t temp-system -f Dockerfile.prod .
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up
 ```
 E execute pelo terminal o comando:
 ```
