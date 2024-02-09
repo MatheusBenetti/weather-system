@@ -1,10 +1,14 @@
-FROM golang:latest
+FROM golang:latest as builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod tidy
 
 COPY . .
-RUN GOOS=linux go build -o temp-system .
+RUN GOOS=linux CGO_ENABLED=0 go build -o temp-system .
+
+FROM scratch
+
+COPY --from=builder /app/temp-system .
 
 CMD ["./temp-system"]
